@@ -152,3 +152,4 @@ Press **Play**. You should see console output indicating the stream is active.
 ## Acknowledgements
 - NVIDIA Isaac Sim URDF Importer workflow
 - Stereolabs ZED Isaac Sim extension: https://github.com/stereolabs/zed-isaac-sim
+- This research was supported by the U.S. Department of Energy (DOE), Office of Environmental Man- agement, under the project ”Digitally Optimized Autonomous Robot System for Hanford Waste Tank Handling” (Solicitation No. LAB 23-EM001 Award No. 278709). This work was performed in partnership with Idaho National Laboratory (INL).
