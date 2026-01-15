@@ -54,3 +54,123 @@ cd ..
 rosdep install --from-paths src --ignore-src -y
 colcon build --symlink-install
 source install/setup.bash
+Launch RViz display:
+
+ros2 launch hanford_wire_manipulator_with_camera_description display.launch.py
+
+
+If the model looks correct in RViz, you’re ready to export/import in Isaac Sim.
+2) Import URDF into Isaac Sim (URDF → USD)
+
+This section converts the URDF into a USD asset that Isaac Sim can simulate efficiently.
+
+A. Enable the URDF importer
+
+Launch Isaac Sim
+
+Open Window → Extensions
+
+Search for and enable: isaacsim.asset.importer.urdf (URDF Importer)
+
+B. Import the URDF
+
+Go to File → Import…
+
+Select URDF and choose:
+
+urdf/robot_pit_end_effector.urdf
+
+Recommended import settings (good stability defaults):
+
+Links: Static base (fixed-base arm)
+
+Colliders: enable Collision From Visuals if collision meshes are not provided
+
+Self-collision: keep OFF unless you are sure meshes do not intersect
+
+Joints/Drives: start conservative, tune later
+
+Import, then File → Save As… and save the stage as:
+
+usd/hanford_wire_manipulator.usd (recommended)
+
+Tip: For reuse across scenes, save the robot as a referenced USD and bring it into environments as needed.
+
+3) Simulate the ZED X camera using stereolabs/zed-isaac-sim
+
+The Stereolabs Isaac Sim extension streams your virtual ZED camera output into the ZED SDK pipeline, so you can use ZED tools and/or the ZED ROS 2 wrapper with a simulated camera.
+
+A. Clone + build the extension
+cd ~/projects
+git clone https://github.com/stereolabs/zed-isaac-sim.git
+cd zed-isaac-sim
+./build.sh   # Linux
+# build.bat  # Windows
+
+B. Add the extension search path in Isaac Sim
+
+Open Window → Extensions
+
+Open Settings (hamburger menu)
+
+Under Extension Search Paths, click +
+
+Add:
+
+<path-to-zed-isaac-sim>/exts
+
+Enable the ZED extension (usually under Third-Party)
+
+C. Add a ZED X camera prim to the stage
+
+Two options:
+
+Option 1 (recommended): use the ZED X USD from Stereolabs
+
+Drag ZED_X.usd into the stage (from the Stereolabs repo assets)
+
+Option 2: keep your mesh and add an Isaac Sim camera sensor
+
+Works for Isaac-only cameras, but ZED streaming is easiest with Option 1.
+
+D. Attach the ZED camera to the robot end-effector
+
+Expand your imported robot prim in the Stage tree
+
+Locate the end-effector link prim
+
+Parent the ZED camera prim under the end-effector link
+
+Adjust pose (XYZ/RPY) to align with your mount
+
+E. Create the Action Graph to stream to ZED SDK
+
+Window → Visual Scripting → Action Graph
+
+Create a new graph
+
+Add nodes:
+
+On Playback Tick
+
+ZED Camera Helper (from the ZED extension)
+
+Connect:
+
+On Playback Tick → ZED Camera Helper
+
+Set properties:
+
+ZED Camera prim: select your ZED prim
+
+Model: ZED X (or matching model)
+
+FPS/Resolution/IPC: tune for performance
+
+Press Play. You should see console output indicating the stream is active.
+
+Acknowledgements
+
+NVIDIA Isaac Sim URDF Importer workflow
+
+Stereolabs ZED Isaac Sim extension: https://github.com/stereolabs/zed-isaac-sim
