@@ -10,13 +10,15 @@ ROS 2 robot description package for a riser-deployed Hanford wire manipulator wi
   <img src="media/new_full_assembly_with_camera.gif" width="900" />
 </p>
 
-### Videos
-GitHub does not reliably play videos embedded via HTML in README files. Use these direct links:
+- Isaac Sim environment: 
+<p align="center">
+  <img src="media/Simulation_env.gif" width="900" />
+</p>
 
-- Isaac Sim environment: **[Simulation_env.mp4](media/Simulation_env.mp4)**
-- ZED camera view: **[ZED_camera_view.mp4](media/ZED_camera_view.mp4)**
-
-> If you prefer inline playback, upload the videos to GitHub Releases (or YouTube) and link them here.
+- ZED camera view:
+<p align="center">
+  <img src="media/camera_view.gif" width="900" />
+</p>
 
 ---
 
