@@ -54,8 +54,11 @@ cd ..
 rosdep install --from-paths src --ignore-src -y
 colcon build --symlink-install
 source install/setup.bash
-
+```
 Launch RViz display:
+
+
+```bash
 
 ros2 launch hanford_wire_manipulator_with_camera_description display.launch.py
 
