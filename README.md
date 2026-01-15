@@ -1,6 +1,6 @@
 # Hanford Wire Manipulator + ZED X Mini (ROS 2 Description + Isaac Sim Export)
 
-ROS 2 robot description package for a riser-deployed Hanford wire manipulator with an end-effector ZED X Mini camera model. Includes URDF, meshes, and a simple RViz display launch. This repo also documents a reproducible workflow to import the URDF into **NVIDIA Isaac Sim** (URDF → USD) and simulate the **ZED camera stream** using **stereolabs/zed-isaac-sim**.
+ROS 2 robot description package for a view port-deployed Hanford wire manipulator with an end-effector ZED X Mini camera model. Includes URDF, meshes, and a simple RViz display launch. This repo also documents a reproducible workflow to import the URDF into **NVIDIA Isaac Sim** (URDF → USD) and simulate the **ZED camera stream** using **stereolabs/zed-isaac-sim**.
 
 ---
 
