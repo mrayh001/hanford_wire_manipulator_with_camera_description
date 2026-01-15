@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="pit_robot_assembly">
+
+  <!-- ========= Shared materials ========= -->
+  <material name="yellowish">
+    <color rgba="1.0 0.85 0.40 1.0"/>
+  </material>
+  <material name="ur5_blue">
+    <color rgba="0.0 0.639 0.878 1.0"/>
+  </material>
+  <material name="pit_transparent">
+    <!-- same color you used, but alpha 0.15 -->
+    <color rgba="0.79216 0.81961 0.93333 0.15"/>
+  </material>
+
+  <!-- ========= Environment: PIT (kept static) ========= -->
+  <link
+    name="pit_base_link">
+    <inertial>
+      <origin
+        xyz="0.91548 0.18867 0.75538"
+        rpy="0 0 0" />
+      <mass
+        value="10549" />
+      <inertia
+        ixx="10402"
+        ixy="17.679"
+        ixz="-164.62"
+        iyy="22590"
+        iyz="10.455"
+        izz="28428" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="3.14 0 0" />
+      <geometry>
+        <mesh
+          filename="package://new_link_arm_full/meshes/tank_base_link.STL" />
+      </geometry>
+      <material name="pit_transparent"/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://new_link_arm_full/meshes/tank_base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ========= Helper frame at pipe entrance ========= -->
+  <link name="pipe_entry"/>
+  <joint name="pit_to_entry" type="fixed">
+    <parent link="pit_base_link"/>
+    <child  link="pipe_entry"/>
+    <!-- Tune this to put pipe_entry exactly at the pipe mouth -->
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ========= Robot carriage: slides DOWN the pipe ========= -->
+  <link name="ceiling_mount"/>
+
+  <!-- Prismatic: robot moves (pit stays fixed). Axis -Z => increase -> down -->
+  <joint name="insert_into_pipe" type="prismatic">
+    <parent link="pipe_entry"/>
+    <child  link="ceiling_mount"/>
+    <!-- Flip robot to hang: rotate PI about X (keeps X-axis joint sign) -->
+    <origin xyz="0 0 0" rpy="3.14159265359 0 0"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="0.0" upper="2.0" effort="1000" velocity="0.5"/>
+  </joint>
+
+  <!-- ========= robot (hanging) ========= -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-1.56333912816404e-05 -7.23490511796809e-14 0.248531752474478" rpy="0 0 0"/>
+      <mass value="0.439458396832792"/>
+      <inertia ixx="0.00243026269783921" ixy="-4.03980358205094e-13" ixz="-1.26462019025067e-16"
+               iyy="0.00229501663801487" iyz="1.28625168179374e-17" izz="0.000304666843833"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/base_link.STL"/>
+      </geometry>
+      <material name="yellowish"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/base_link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+  <!-- Yaw DOF to rotate around the pipe axis (Z) after insertion -->
+  <link name="yaw_mount"/>
+
+  <joint name="rotate_in_pipe" type="revolute">
+    <parent link="ceiling_mount"/>
+    <child  link="yaw_mount"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14159265359" upper="3.14159265359" effort="50" velocity="1.5"/>
+  </joint>
+
+  <joint name="yaw_mount_to_base" type="fixed">
+    <parent link="yaw_mount"/>
+    <child  link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+
+  <link name="link_1">
+    <inertial>
+      <origin xyz="-1.3293e-05 5.6923e-12 0.20807" rpy="0 0 0"/>
+      <mass value="0.51682"/>
+      <inertia ixx="0.0025795" ixy="4.1003e-13" ixz="3.0072e-15"
+               iyy="0.0024287" iyz="-5.3653e-13" izz="0.00032057"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.07" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/link_1.STL"/>
+      </geometry>
+      <material name="ur5_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.07" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/link_1.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="joint_1" type="revolute">
+    <origin xyz="0 -0.0011869 0.48" rpy="0.016254 0 0"/>
+    <parent link="base_link"/>
+    <child  link="link_1"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.57" upper="1.57" effort="20" velocity="20"/>
+  </joint>
+
+  <link name="link_2">
+    <inertial>
+      <origin xyz="-2.2427e-13 7.6046e-12 0.20814" rpy="0 0 0"/>
+      <mass value="0.51663"/>
+      <inertia ixx="0.0025795" ixy="4.0855e-13" ixz="4.1575e-15"
+               iyy="0.0024287" iyz="-4.5089e-13" izz="0.00032057"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.07" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/link_2.STL"/>
+      </geometry>
+      <material name="yellowish"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.07" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/link_2.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint_2" type="revolute">
+    <origin xyz="0 -0.000102354980813121 0.55" rpy="0.0055098530179333 0 0"/>
+    <parent link="link_1"/>
+    <child  link="link_2"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.57" upper="1.57" effort="20" velocity="20"/>
+  </joint>
+
+   <link name="end_effector">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.20"/> <!-- <<< TUNE -->
+      <inertia ixx="0.0005" ixy="0" ixz="0" iyy="0.0005" iyz="0" izz="0.0005"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>   
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/end_effector.STL" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="yellowish"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/end_effector.STL" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+   <joint name="end_effector_joint" type="revolute">
+    <origin xyz="0 -0.000402354980813121 0.55" rpy="0 -1.57 1.57"/>
+    <parent link="link_2"/>
+    <child  link="end_effector"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="20" velocity="20"/>
+  </joint>
+
+  <!-- Spinning pulley link -->
+  <link name="pulley_drive">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.30"/> <!-- <<< TUNE or replace with real inertia -->
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <!-- Place the pulley at the wrist face of link_2 -->
+      <origin xyz="0 0 0" rpy="0 0 0"/> <!-- <<< TUNE offset -->
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/pulley.STL" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="ur5_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/> <!-- same as visual -->
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/pulley.STL" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint_3_pulley_spin" type="revolute">
+    <parent link="end_effector"/> <child link="pulley_drive"/>
+    <origin xyz=" 0.145 0.019 0" rpy="-1.57 0 0"/>   <!-- center of pulley bore  <<< TUNE -->
+    <axis xyz="0 0 1"/>                  
+    <limit lower="-3.14159265359" upper="3.14159265359" effort="10" velocity="6.28"/>
+    <dynamics damping="0.02" friction="0.0"/>
+  </joint>
+
+  <link name="camera_link"/>
+
+  <joint name="camera_link_to_pulley" type="fixed">
+    <parent link="pulley_drive"/> <child link="camera_link"/>
+    <!-- rotate from x-forward,z-up to z-forward,x-right,y-down -->
+    <origin xyz="0 0 -0.04" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ZED X Mini base link -->
+  <link name="zed_x_mini_base">
+    <visual>
+      <origin xyz="0.0125841 0.0156099 0.00667 " rpy="1.5707963 0.0000001 3.1415925"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_056.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="0.0125679 0.0156099 0.00667 " rpy="1.5707963 0.0000001 3.1415925"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_057.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="-0.0000162 0.0205866 0.01178 " rpy="0. -1.5707961 -1.5707964"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_058.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="0.0067838 0.0228566 0.01178 " rpy="-1.570797 0.0000002 3.1415925"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_063.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="-0.0068162 0.0228566 0.01178 " rpy="-1.570797 0.0000002 3.1415925"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_064.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="0.0125727 0.0156099 0.00667 " rpy="1.5707963 0.0000001 3.1415925"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_065.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="0.0302985 0.0108403 0.0035155" rpy="1.5707966 0. 0. "/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_075.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <visual>
+      <origin xyz="0.0802065 0.0108403 0.0035155" rpy="1.5707966 0. 0. "/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_077.obj" scale="1. 1. 1."/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0125841 0.0156099 0.00667 " rpy="1.5707963 0.0000001 3.1415925"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_056.obj" scale="1. 1. 1."/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0125679 0.0156099 0.00667 " rpy="1.5707963 0.0000001 3.1415925"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_057.obj" scale="1. 1. 1."/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0000162 0.0205866 0.01178 " rpy="0. -1.5707961 -1.5707964"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_058.obj" scale="1. 1. 1."/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0067838 0.0228566 0.01178 " rpy="-1.570797 0.0000002 3.1415925"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_063.obj" scale="1. 1. 1."/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0068162 0.0228566 0.01178 " rpy="-1.570797 0.0000002 3.1415925"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_064.obj" scale="1. 1. 1."/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.0125727 0.0156099 0.00667 " rpy="1.5707963 0.0000001 3.1415925"/>
+      <geometry>
+        <mesh filename="package://new_link_arm_full/meshes/zed_x_mini/Mesh_065.obj" scale="1. 1. 1."/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="camera_link_to_zed_x_mini" type="fixed">
+    <parent link="camera_link"/>
+    <child  link="zed_x_mini_base"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="zed_left_camera_frame"/>
+  <link name="zed_right_camera_frame"/>
+  <link name="zed_imu_frame"/>
+
+  <joint name="zed_base_to_left" type="fixed">
+    <parent link="zed_x_mini_base"/>
+    <child  link="zed_left_camera_frame"/>
+    <origin xyz="0.025 -0.015 0.015" rpy="1.5707964 0 3.1415927"/>
+  </joint>
+
+  <joint name="zed_base_to_right" type="fixed">
+    <parent link="zed_x_mini_base"/>
+    <child  link="zed_right_camera_frame"/>
+    <origin xyz="-0.025 -0.015 0.015" rpy="1.5707964 0 3.1415927"/>
+  </joint>
+
+  <joint name="zed_base_to_imu" type="fixed">
+    <parent link="zed_x_mini_base"/>
+    <child  link="zed_imu_frame"/>
+    <origin xyz="0.025 -0.015 0.015" rpy="0 0 -1.5707964"/>
+  </joint>
+
+  <link name="zed_left_camera_optical_frame"/>
+  <link name="zed_right_camera_optical_frame"/>
+
+  <!-- camera_frame -> camera_optical_frame -->
+  <joint name="zed_left_to_optical" type="fixed">
+    <parent link="zed_left_camera_frame"/>
+    <child  link="zed_left_camera_optical_frame"/>
+    <origin xyz="0 0 0" rpy="-1.57079632679 0 -1.57079632679"/>
+  </joint>
+
+  <joint name="zed_right_to_optical" type="fixed">
+    <parent link="zed_right_camera_frame"/>
+    <child  link="zed_right_camera_optical_frame"/>
+    <origin xyz="0 0 0" rpy="-1.57079632679 0 -1.57079632679"/>
+  </joint>
+</robot>

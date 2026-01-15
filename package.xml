@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>hanford_wire_manipulator_with_camera_description</name>
+  <version>1.0.0</version>
+  <description>
+    URDF description package for hanford_wire_manipulator_with_camera_description.
+    This package contains configuration data, 3D models, and launch files
+    for the a wire driven robot build for hanford pit with camera as a end effector. 
+  </description>
+
+  <!-- Update these -->
+  <maintainer email="mrayhan@fiu.edu">Md Munim Rayhan</maintainer>
+  <license>BSD-3-Clause</license>
+
+  <!-- ROS 2 build tool -->
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- Runtime dependencies (ROS 2 names) -->
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>joint_state_publisher_gui</exec_depend>
+
+  <!-- If you use .xacro files -->
+  <exec_depend>xacro</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
