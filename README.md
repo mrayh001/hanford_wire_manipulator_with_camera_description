@@ -10,14 +10,6 @@ ROS 2 robot description package for a riser-deployed Hanford wire manipulator wi
   <img src="media/new_full_assembly_with_camera.gif" width="900" />
 </p>
 
-### Videos
-GitHub does not reliably play videos embedded via HTML in README files. Use these direct links:
-
-- Isaac Sim environment: **[Simulation_env.mp4](media/Simulation_env.mp4)**
-- ZED camera view: **[ZED_camera_view.mp4](media/ZED_camera_view.mp4)**
-
-> If you prefer inline playback, upload the videos to GitHub Releases (or YouTube) and link them here.
-
 ---
 
 ## Repository Structure
@@ -150,3 +142,4 @@ Press **Play**. You should see console output indicating the stream is active.
 ## Acknowledgements
 - NVIDIA Isaac Sim URDF Importer workflow
 - Stereolabs ZED Isaac Sim extension: https://github.com/stereolabs/zed-isaac-sim
+- This research was supported by the U.S. Department of Energy (DOE), Office of Environmental Man- agement, under the project ”Digitally Optimized Autonomous Robot System for Hanford Waste Tank Han- dling” (Solicitation No. LAB 23-EM001 Award No. 278709). This work was performed in partnership with Idaho National Laboratory (INL).
