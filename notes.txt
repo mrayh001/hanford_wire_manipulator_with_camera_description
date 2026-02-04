@@ -1,0 +1,135 @@
+from isaacsim.core.prims import SingleArticulation
+import numpy as np
+from omni.isaac.core.utils.stage import get_current_stage
+import omni.appwindow
+import carb.input
+from carb.input import KeyboardEventType
+
+# Set up world
+world = World()
+world.reset()
+
+robot = SingleArticulation("/World/pit_robot_robotonly",)
+robot.initialize()
+
+# Get keyboard and input interface
+app_window = omni.appwindow.get_default_app_window()
+keyboard = app_window.get_keyboard()
+input = carb.input.acquire_input_interface()
+
+# Joint state
+q = robot.get_joint_positions()
+step = 0.01
+
+# Callback
+def on_keyboard_input(e):
+	global q
+
+	# Only act on press or repeat
+	if e.type not in (KeyboardEventType.KEY_PRESS, KeyboardEventType.KEY_REPEAT):
+		return
+	if e.type == KeyboardEventType.KEY_PRESS:
+		keys_down.add(e.input)
+	elif e.type == KeyboardEventType.KEY_RELEASE:
+		keys_down.discard(e.input)
+
+    # WASD example
+	if e.input == carb.input.KeyboardInput.W:
+		q[0] += step
+	elif e.input == carb.input.KeyboardInput.S:
+		q[0] -= step
+	elif e.input == carb.input.KeyboardInput.A:
+		q[1] += step
+	elif e.input == carb.input.KeyboardInput.D:
+		q[1] -= step
+
+	robot.set_joint_position_targets(q)
+	print("Updated q:", q)
+
+# Subscribe
+sub_id = input.subscribe_to_keyboard_events(keyboard, on_keyboard_input)
+
+print("Keyboard control subscribed.")
+
+
+
+from isaacsim.core.prims import SingleArticulation
+import numpy as np
+from isaacsim.core.api import World
+from omni.isaac.core.utils.stage import get_current_stage
+import omni.appwindow
+import carb.input
+from carb.input import KeyboardEventType
+
+world = World.instance()
+
+robot = world.scene.get_object("pit_robot")
+
+robot.initialize()
+
+world.step(render=True)
+
+# Get keyboard and input interface
+app_window = omni.appwindow.get_default_app_window()
+keyboard = app_window.get_keyboard()
+input = carb.input.acquire_input_interface()
+
+# Joint state
+q = robot.get_joint_positions()
+step = 0.01
+speed = 0.1
+
+app_window = omni.appwindow.get_default_app_window()
+keyboard = app_window.get_keyboard()
+input_iface = carb.input.acquire_input_interface()
+
+keys_down = set()
+
+# Callback
+def on_keyboard_input(e):
+    if e.type == KeyboardEventType.KEY_PRESS:
+        keys_down.add(e.input)
+    elif e.type == KeyboardEventType.KEY_RELEASE:
+        keys_down.discard(e.input)
+
+input_iface.subscribe_to_keyboard_events(keyboard, on_keyboard_input)
+
+def on_physics_step(dt):
+	global q
+	
+    # WASD example
+	if e.input == carb.input.KeyboardInput.W: # insert into pipe up
+		q[0] += speed * dt
+	elif e.input == carb.input.KeyboardInput.S: # insert into pipe down
+		q[0] -= speed * dt
+		
+	elif e.input == carb.input.KeyboardInput.A: # rotate in pipe left
+		q[1] += speed * dt
+	elif e.input == carb.input.KeyboardInput.D: # rotate in pipe right
+		q[1] -= speed * dt
+		
+	elif e.input == carb.input.KeyboardInput.UP: # joint_1 up
+		q[2] += speed * dt
+	elif e.input == carb.input.KeyboardInput.DOWN: # joint_1 down
+		q[2] -= speed * dt
+		
+	elif e.input == carb.input.KeyboardInput.LEFT: # joint_2 up
+		q[3] += speed * dt
+	elif e.input == carb.input.KeyboardInput.RIGHT: # joint_2 right
+		q[3] += speed * dt
+		
+	elif e.input == carb.input.KeyboardInput.R: # end effector joint up
+		q[4] += speed * dt
+	elif e.input == carb.input.KeyboardInput.F: # end effector joint down
+		q[4] -= speed * dt
+		
+	limits = robot.get_joint_limits()
+	
+	q[:] = np.clip(q, limits[:,0], limits[:,1])
+	robot.set_joint_position_targets(q)
+	print("Updated q:", q)
+
+# Subscribe
+# world.add_physics_callback("keyboard_drive", on_physics_step)
+
+print("Keyboard control subscribed.")
